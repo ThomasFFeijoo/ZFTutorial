@@ -2,6 +2,6 @@
 
 namespace ZFT;
 
-class Module {
+class User {
 
 }

@@ -30,7 +30,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
+            "PortalTest\\": "module/Portal/test/",
+            "ZFTest\\": "module/ZFT/test/"
         }
     },
     "extra": [],

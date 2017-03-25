@@ -9,11 +9,13 @@ namespace Portal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use ZFT\User;
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        $user = new User();
         return new ViewModel();
     }
 }
