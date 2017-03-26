@@ -13,7 +13,9 @@
 
 return [
     'db' => [
-        'driver' => 'Pdo'
+        'hostname' => 'localhost',
+        'driver' => 'Pdo',
+        'database' => 'zftutorial'
     ]
     // ...
 ];
