@@ -13,9 +13,8 @@
 
 return [
     'db' => [
-        'hostname' => 'localhost',
+        'dsn' => 'mysql:dbname=zftutorial;host=localhost',
         'driver' => 'Pdo',
-        'database' => 'zftutorial'
     ]
     // ...
 ];

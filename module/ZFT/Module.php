@@ -20,7 +20,8 @@ class Module implements ServiceProviderInterface {
             $router = $e->getRouteMatch();
             if(!($router->getParam('needsDatabase') === false)) {
                 $adapter = $sm->get('dbcon');
-                $migrations = new Migrations();
+                $migrations = new Migrations($adapter);
+                $migrations->needsUpdate();
             }
         },100);
     }
