@@ -8,6 +8,7 @@ use Zend\Db\Metadata\MetadataInterface;
 use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Ddl;
 
 class Migrations {
 
@@ -31,6 +32,13 @@ class Migrations {
 
     public function needsUpdate() {
         return ($this->getVersion() < self::MINIMUM_SCHEMA_VERSION);
+    }
+
+    private function execute(Ddl\SqlInterface $ddl) {
+        $sql = new Sql($this->adapter);
+        $sqlString = $sql->buildSqlString($ddl);
+
+        $this->adapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
     }
 
     private function getVersion()
@@ -58,7 +66,7 @@ class Migrations {
         $result = $statement->execute();
         $result = $result->current();
         $version = $result['value'];
-        
+
         /*
         $result = $this->adapter->query($sql, ['option' => 'zftschema']);
         $result = $result->toArray();
@@ -66,4 +74,5 @@ class Migrations {
 
         return $version;
     }
+    
 }
