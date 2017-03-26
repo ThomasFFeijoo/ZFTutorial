@@ -9,6 +9,7 @@ use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Ddl;
+use Zend\Db\Sql\Where;
 
 class Migrations {
 
@@ -75,8 +76,44 @@ class Migrations {
         return $version;
     }
 
+    public function run() {
+        $migrationClass = new \ReflectionClass(Migrations::class);
+        $methods = $migrationClass->getMethods(\ReflectionMethod::IS_PROTECTED);
+
+        $updates = [];
+        array_walk($methods, function(\ReflectionMethod $method) use (&$updates) {
+            $version = substr($method->getName(), strpos($method->getName(), "_")+1);
+            $version = (int) $version;
+            $updates[$version] = $method->getName();
+        });
+
+        ksort($updates);
+
+        $currentVersion = (int) $this->getVersion();
+        for($v = $currentVersion +1; $v <= self::MINIMUM_SCHEMA_VERSION; $v++) {
+            $update = $updates[$v];
+            $this->{$update}();
+
+            $this->setVersion($v);
+        }
+        return;
+    }
+
+    private function setVersion($version) {
+        $sql = new Sql($this->adapter);
+        $schemaVersionUpdate = $sql->update();
+        $schemaVersionUpdate->table(self::INI_TABLE);
+        $schemaVersionUpdate->set(['value' => $version]);
+
+        $schemaVersionRow = new Where();
+        $schemaVersionRow->equalTo('options', 'ZftSchemaVersion');
+
+        $schemaVersionStatement = $sql->prepareStatementForSqlObject($schemaVersionUpdate);
+        $schemaVersionStatement->execute();
+    }
+
     protected function update_001() {
-        $iniTable = new Ddl\CreateTable(self::INI_TABLE);
+        /*$iniTable = new Ddl\CreateTable(self::INI_TABLE);
 
         $option = new Ddl\Column\Varchar('options');
         $value = new Ddl\Column\Varchar('value');
@@ -85,7 +122,7 @@ class Migrations {
         $iniTable->addColumn($value);
 
         $this->execute($iniTable);
-
+*/
         $sql = new Sql($this->adapter);
         $insertInitialVersion = $sql->insert();
         $insertInitialVersion->into(self::INI_TABLE);
@@ -102,4 +139,5 @@ class Migrations {
         $insertStatement = $sql->prepareStatementForSqlObject($insertInitialVersion);
         $insertStatement->execute();
     }
+
 }
