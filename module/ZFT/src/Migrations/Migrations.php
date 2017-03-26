@@ -61,7 +61,7 @@ class Migrations {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(self::INI_TABLE);
-        $select->where(['options' => 'zftschema']);
+        $select->where(['options' => 'ZftSchemaVersion']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
