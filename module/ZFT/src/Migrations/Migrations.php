@@ -7,6 +7,7 @@ use Zend\Db\Adapter\Platform\PlatformInterface;
 use Zend\Db\Metadata\MetadataInterface;
 use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
+use Zend\Db\Sql\Sql;
 
 class Migrations {
 
@@ -44,13 +45,24 @@ class Migrations {
             return 0;
         }
 
-        $sql = "SELECT value ".
+        /*$sql = "SELECT value ".
             'FROM '.$this->platform->quoteIdentifier(self::INI_TABLE)." ".
-            'WHERE '.$this->platform->quoteIdentifier('options').' = :option';
+            'WHERE '.$this->platform->quoteIdentifier('options').' = :option';*/
 
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(self::INI_TABLE);
+        $select->where(['options' => 'zftschema']);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $result = $result->current();
+        $version = $result['value'];
+        
+        /*
         $result = $this->adapter->query($sql, ['option' => 'zftschema']);
         $result = $result->toArray();
-        $version = $result[0]['value'];
+        $version = $result[0]['value'];*/
 
         return $version;
     }
