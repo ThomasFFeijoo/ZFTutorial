@@ -75,7 +75,7 @@ class Migrations {
         return $version;
     }
 
-    protected function update1_001() {
+    protected function update_001() {
         $iniTable = new Ddl\CreateTable(self::INI_TABLE);
 
         $option = new Ddl\Column\Varchar('options');
