@@ -76,7 +76,7 @@ class Migrations {
     }
 
     protected function update1_001() {
-        $iniTable = new Ddl\CreateTable('ini');
+        $iniTable = new Ddl\CreateTable(self::INI_TABLE);
 
         $option = new Ddl\Column\Varchar('options');
         $value = new Ddl\Column\Varchar('value');
@@ -85,5 +85,21 @@ class Migrations {
         $iniTable->addColumn($value);
 
         $this->execute($iniTable);
+
+        $sql = new Sql($this->adapter);
+        $insertInitialVersion = $sql->insert();
+        $insertInitialVersion->into(self::INI_TABLE);
+//        $insertInitialVersion->columns(array('options','value'));
+//        $insertInitialVersion->values(array('ZftSchemaVersion', 1));
+
+        $values = [
+            'options' => 'ZftSchemaVersion',
+            'value' => 1
+        ];
+        $insertInitialVersion->columns(array_keys($values));
+        $insertInitialVersion->values(array_values($values));
+
+        $insertStatement = $sql->prepareStatementForSqlObject($insertInitialVersion);
+        $insertStatement->execute();
     }
 }
