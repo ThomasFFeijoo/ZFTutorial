@@ -123,21 +123,21 @@ class Migrations {
 
         $this->execute($iniTable);
 */
-        $sql = new Sql($this->adapter);
-        $insertInitialVersion = $sql->insert();
-        $insertInitialVersion->into(self::INI_TABLE);
-//        $insertInitialVersion->columns(array('options','value'));
-//        $insertInitialVersion->values(array('ZftSchemaVersion', 1));
-
-        $values = [
-            'options' => 'ZftSchemaVersion',
-            'value' => 1
-        ];
-        $insertInitialVersion->columns(array_keys($values));
-        $insertInitialVersion->values(array_values($values));
-
-        $insertStatement = $sql->prepareStatementForSqlObject($insertInitialVersion);
-        $insertStatement->execute();
+//        $sql = new Sql($this->adapter);
+//        $insertInitialVersion = $sql->insert();
+//        $insertInitialVersion->into(self::INI_TABLE);
+////        $insertInitialVersion->columns(array('options','value'));
+////        $insertInitialVersion->values(array('ZftSchemaVersion', 1));
+//
+//        $values = [
+//            'options' => 'ZftSchemaVersion',
+//            'value' => 1
+//        ];
+//        $insertInitialVersion->columns(array_keys($values));
+//        $insertInitialVersion->values(array_values($values));
+//
+//        $insertStatement = $sql->prepareStatementForSqlObject($insertInitialVersion);
+//        $insertStatement->execute();
     }
 
 }
